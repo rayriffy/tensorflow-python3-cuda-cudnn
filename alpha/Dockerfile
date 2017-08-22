@@ -91,7 +91,10 @@ RUN apt-get install -y \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip --no-cache-dir install \
+RUN ln -s /usr/bin/python3 /usr/bin/python \
+	&& pip3 install --upgrade pip
+	
+RUN pip3 --no-cache-dir install \
 		Pillow \
         h5py \
         ipykernel \
@@ -105,11 +108,8 @@ RUN pip --no-cache-dir install \
         && \
     python -m ipykernel.kernelspec
 
-RUN pip --no-cache-dir install \
+RUN pip3 --no-cache-dir install \
     	http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp34-cp34m-linux_x86_64.whl
-
-RUN ln -s /usr/bin/python3 /usr/bin/python \
-	&& pip3 install --upgrade pip
 
 # Set up our notebook config.
 COPY jupyter_notebook_config.py /root/.jupyter/
