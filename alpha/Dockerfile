@@ -9,7 +9,9 @@ ENV CUDA_VERSION 8.0.61
 ENV CUDNN_VERSION 7.0.1.13
 
 #TF VERSION
-ENV TENSORFLOW_VERSION 1.3.1
+ENV TENSORFLOW_VERSION 1.3.0
+
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
 RUN NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
     NVIDIA_GPGKEY_FPR=ae09fe4bbd223a84b2ccfce3f60f4b3d7fa2af80 && \
@@ -51,8 +53,6 @@ ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
-
 RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
 LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
@@ -93,9 +93,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN ln -s /usr/bin/python3 /usr/bin/python \
+RUN ln -sv -f /usr/bin/python3 /usr/bin/python \
 	&& pip3 install --upgrade pip
-	
+
+RUN pip install -U setuptools	
+
 RUN pip3 --no-cache-dir install \
 		Pillow \
         h5py \
@@ -111,7 +113,7 @@ RUN pip3 --no-cache-dir install \
     python -m ipykernel.kernelspec
 
 RUN pip3 --no-cache-dir install \
-    	http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp34-cp34m-linux_x86_64.whl
+    	http://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-${TENSORFLOW_VERSION}-cp35-cp35m-linux_x86_64.whl
 
 # Set up our notebook config.
 COPY jupyter_notebook_config.py /root/.jupyter/
