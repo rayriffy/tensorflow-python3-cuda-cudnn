@@ -51,6 +51,8 @@ ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+
 RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
 
 LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
@@ -60,7 +62,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
 		build-essential \
 		curl \
 		libfreetype6-dev \
